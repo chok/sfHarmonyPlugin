@@ -211,11 +211,11 @@ class sfHarmonyGateway
     self::$gateways[self::$current]->complete();
   }
 
-  public function dispatch($source, $operation, $args = array(), $request_id = null)
+  public function dispatch($service, $operation, $request_id = null)
   {
     if(class_exists($this->dispatcher))
     {
-      $dispatcher = new $this->dispatcher($source, $operation, $args, $request_id);
+      $dispatcher = new $this->dispatcher($service, $operation, $request_id);
       $dispatcher->dispatch();
     }
     else throw new sfException(sprintf('Dispatcher "%s" does not exists', $this->dispatcher));
@@ -268,7 +268,7 @@ class sfHarmonyGateway
     {
       foreach($requests as $id => $request)
       {
-        $this->dispatch($request['source'], $request['operation'], $request['arguments'], $id);
+        $this->dispatch($request['service'], $request['operation'], $id);
       }
     }
     else throw new sfException('No request received.');

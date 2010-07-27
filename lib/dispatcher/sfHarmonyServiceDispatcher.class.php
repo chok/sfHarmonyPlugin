@@ -3,19 +3,7 @@ class sfHarmonyServiceDispatcher extends sfHarmonyDispatcher
 {
   public function dispatch()
   {
-    $call = explode('::', $this->source);
-
-    $packages = array();
-    $class = '';
-    if(!isset($call[1]))
-    {
-      $class = $call[0];
-    }
-    else
-    {
-      $packages = explode('.', $call[0]);
-      $class = $call[1];
-    }
+    $packages = explode('.', $this->service);
 
     $service_path = array();
     $service = null;
@@ -42,16 +30,17 @@ class sfHarmonyServiceDispatcher extends sfHarmonyDispatcher
 
     if(is_null($service))
     {
-      $service = sfConfig::get('app_harmony_default_service', 'sfHarmonyService');
+      $service = sfConfig::get('app_harmony_default_service', 'sfHarmonyWebService');
     }
 
     if(!class_exists($service))
     {
       throw new sfException(sprintf('Service "%s" does not exists', $service));
     }
-
-    $instance = new $service($this->source, $this->operation, $this->args);
-
+  
+    $params = array();
+    $instance = new $service($this->operation);
+    
     if($instance->isAsync())
     {
       $instance->setCallback(array($this, 'send'));
