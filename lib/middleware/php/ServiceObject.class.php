@@ -5,7 +5,14 @@ class ServiceObject
 
   public function __construct($data)
   {
-    $this->data = $data;
+    $data2 = new stdClass();
+    foreach($data as $key => $value)
+    {
+      $key = strtolower($key);
+      $data2->$key = $value;
+    }
+    
+    $this->data = $data2;
   }
 
   public function __call($method, $arguments)
@@ -20,7 +27,7 @@ class ServiceObject
     {
       if(is_object($this->data->$field))
       {
-        return new RemoteObject($this->data->$field);
+        return new ServiceObject($this->data->$field);
       }
       else
       {

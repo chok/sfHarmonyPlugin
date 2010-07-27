@@ -140,9 +140,21 @@ class ServiceRequest
     return implode(' \r\n ',$headers);
   }
   
-  public function addQuery($query)
+  public function addQuery($query, $key = null)
   {
-    $this->queries[] = $query;
+    if(is_null($key))
+    {
+      $this->queries[] = $query;
+      end($this->queries);
+      
+      return  key($this->queries);
+    }
+    else
+    {
+      $this->queries[$key] = $query;
+      
+      return $key;
+    }
   }
   
   public function setQueries($queries)
@@ -175,31 +187,39 @@ class ServiceRequest
                     );
     $context = stream_context_create($options);
     
-    $this->result = file_get_contents($this->getFullUrl(), false, $context);
+    //json ?? gestion du format !
+    $this->result = json_decode(file_get_contents($this->getFullUrl(), false, $context));
     
     $this->called = true;
 
     return $this->result;
   }
 
-  public function get($service, $default = null)
+  public function get($query_id, $default = null)
   {
-    if(is_null($this->result) || !$this->called)
-    {
+    //if(is_null($this->result) || !$this->called)
+    //{
       $this->send();
 
-      if (isset($this->result->$service))
+      if (isset($this->result[$query_id]))
       {
-        foreach($this->result->$service as $key => $value)
+        if(is_object($this->result[$query_id]))
         {
-          if (is_object($value))
+          $this->result[$query_id] = new ServiceObject($this->result[$query_id]);
+        }
+        elseif(is_array($this->result[$query_id]))
+        {
+          foreach($this->result[$query_id] as $key => $value)
           {
-            $this->result->$service->$key = new RemoteObject($value);
+            if (is_object($value))
+            {
+              $this->result[$query_id][$key] = new ServiceObject($value);
+            }
           }
         }
       }
-    }
+    //}
 
-    return isset($this->result->$service)?$this->result->$service:$default;
+    return isset($this->result[$query_id])?$this->result[$query_id]:$default;
   }
 }
