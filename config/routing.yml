@@ -1,0 +1,9 @@
+harmony_gateway:
+  url:   /gateway/:gateway
+  param: { module: sfHarmonyGateway, action: gateway }
+harmony_services_gateway:
+  url:   /services/:gateway
+  param: { module: sfHarmonyServicesBrowser, action: index }
+harmony_services:
+  url:   /services
+  param: { module: sfHarmonyServicesBrowser, action: index }

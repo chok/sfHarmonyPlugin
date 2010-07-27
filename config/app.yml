@@ -1,0 +1,8 @@
+all:
+  harmony:
+    flex_sdk: 3.4.1
+    platform: flex
+    auto_replace: true
+    flash_version: 10
+    
+      
