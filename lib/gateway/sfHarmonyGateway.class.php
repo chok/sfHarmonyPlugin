@@ -57,7 +57,7 @@ class sfHarmonyGateway
   protected function initialize()
   {
     $this->setRequestParser('sfHarmonyRequestParser');
-    $this->setDispatcher('sfHarmonySecureServiceDispatcher');
+    $this->setDispatcher('sfHarmonyServiceDispatcher');
     $this->setType('text');
   }
 
