@@ -87,7 +87,7 @@ class sfHarmonyService
 
     //return new SabreAMF_ArrayCollection(array(1,2,3));
     //return 'Hello!!';
-    $data = new sfHarmonyData($result);
+    $data = new sfHarmonySecureFormatter($result);
     sfContext::getInstance()->getLogger()->info('{sfHarmonyPlugin} Data '.print_r($data->getRawValue(), true));
 
     return $data->getRawValue();

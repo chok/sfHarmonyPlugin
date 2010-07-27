@@ -8,6 +8,9 @@ class sfHarmonyGateway
   protected $type;
   protected $completed_callback;
   protected $request;
+  
+  protected $nb_requests;
+  protected $nb_completed_requests;
 
   private static $gateways;
   private static $current;
@@ -23,6 +26,7 @@ class sfHarmonyGateway
       set_error_handler(array('sfHarmonyGateway', 'errorHandler'));
       $this->setCompleteCallback(array($this, 'complete'));
       $this->setFormatters = array('doctrine', 'propel', 'base');
+      $this->nb_completed_requests = 0;
       
       $this->request = $request;
 
@@ -42,13 +46,18 @@ class sfHarmonyGateway
 
   public function callCompleteCallback()
   {
-    return call_user_func($this->complete_callback);
+    $this->nb_completed_requests++;
+    
+    if($this->getNbRequests() == $this->getNbCompletedRequests())
+    {
+      return call_user_func($this->complete_callback);
+    }
   }
 
   protected function initialize()
   {
     $this->setRequestParser('sfHarmonyRequestParser');
-    $this->setDispatcher('sfHarmonyServiceDispatcher');
+    $this->setDispatcher('sfHarmonySecureServiceDispatcher');
     $this->setType('text');
   }
 
@@ -121,6 +130,16 @@ class sfHarmonyGateway
   public function getDispatcher()
   {
     return $this->dispatcher;
+  }
+  
+  public function getNbRequests()
+  {
+    return $this->nb_requests;
+  }
+  
+  public function getNbCompletedRequests()
+  {
+    return $this->nb_completed_requests;
   }
   
   public function setRequestParser($request_parser)
@@ -211,6 +230,18 @@ class sfHarmonyGateway
     }
     else throw new sfException(sprintf('Parser "%s" does not exists', $this->request_parser));
   }
+  
+  public function parseAll($requests)
+  {
+    foreach($requests as $key => $request)
+    {
+      $requests[$key] = $this->parse($request);
+      
+      if(is_null($requests[$key])) unset($requests[$key]);
+    }
+    
+    return $requests;
+  }
 
   public function setType($type)
   {
@@ -229,15 +260,18 @@ class sfHarmonyGateway
       $requests = $this->readRequests();
     }
 
-    foreach($requests as $id => $request)
+    $requests = $this->parseAll($requests);
+    
+    $this->nb_requests = count($requests);
+    
+    if(count($requests) > 0)
     {
-      
-      $request_array = $this->parse($request);
-      if($request_array)
+      foreach($requests as $id => $request)
       {
-        $this->dispatch($request_array['source'], $request_array['operation'], $request_array['arguments'], $id);
+        $this->dispatch($request['source'], $request['operation'], $request['arguments'], $id);
       }
     }
+    else throw new sfException('No request received.');
   }
   
   protected function readRequests()

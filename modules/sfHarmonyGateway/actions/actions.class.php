@@ -17,6 +17,12 @@ class sfHarmonyGatewayActions extends sfActions
     $gateway = $request->getParameter('gateway');
     
     sfHarmonyGateway::create($gateway, true, $request);
+    
+    //$gateway = sfHarmonyGateway::create($gateway, false, $request);
+    
+    //$requests = array('')
+    
+    
 
     //Gateway take control on sending response
     //TODO Find a solution to eliminate sfRenderingFilter

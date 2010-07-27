@@ -53,6 +53,7 @@ class sfHarmonyServicesBrowserActions extends sfActions
     $gateway = sfHarmonyGateway::getInstance();
 
     $response = $gateway->getResponse();
+    
     $parameters = array();
     if($response instanceof SabreAMF_Message)
     {

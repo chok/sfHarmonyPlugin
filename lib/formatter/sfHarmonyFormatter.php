@@ -1,5 +1,5 @@
 <?php
-class sfHarmonyData
+class sfHarmonyFormatter
 {
   protected $data;
 
@@ -25,7 +25,7 @@ class sfHarmonyData
       }
       return $result;
     }
-    elseif($data instanceof Doctrine_Record)
+    elseif(is_object($data) && method_exists($data, 'toArray'))
     {
       //return new SabreAMF_TypedObject('model.Post', $data->toArray());
       return $data->toArray();
