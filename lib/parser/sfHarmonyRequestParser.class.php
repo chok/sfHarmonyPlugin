@@ -9,57 +9,13 @@ class sfHarmonyRequestParser extends sfHarmonyParser
     }
 
     
-    try 
-    {
-      $parts = explode('->', $request);
-    }
-    catch(Exception $e)
-    {
-      var_dump($request);die();  
-    }
-
-    $source = null;
-    $operation = null;
-    $arguments = array();
-    $static = false;
-
-    if(count($parts) > 1)
-    {
-      $operation = array_pop($parts);
-      $source = array_shift($parts);
-    }
-    else
-    {
-      $static = true;
-      $parts = explode('::', $request);
-      if(count($parts) == 2)
-      {
-        $operation = $parts[1];
-        $source = $parts[0];
-      }
-      elseif(count($parts) > 2)
-      {
-        $operation = array_pop($parts);
-        $source = implode('::', $parts);
-      }
-    }
-
-    if($operation)
-    {
-      //TODO nul pas de pris en compte d'autre parentheses !!!
-      $parts = explode('(', $operation);
-      $operation = $parts[0];
-      $parts = explode(')', $parts[1]);
-      $arguments = explode(',', $parts[0]);
-    }
-
-    if(!empty($source) && !empty($operation))
+    list($service, $operation) = explode('|', $request);
+    
+    if(!empty($service) && !empty($operation))
     {
       return array(
-                    'static'    => $static,
-                    'source'    => $source,
+                    'service'    => $service,
                     'operation' => $operation,
-                    'arguments' => $arguments
                   );
     }
     else return null;

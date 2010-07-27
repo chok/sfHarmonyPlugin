@@ -40,4 +40,16 @@ class ServiceObject
       //throw new sfException(sprintf('La méthode %s n\'existe pas',$method));
     }
   }
+  
+  public function __toString()
+  {
+    $string = array();
+    
+    foreach($this->data as $field => $value)
+    {
+      $string[] = $field.' : '.$value;
+    }
+    
+    return implode(' | ', $string);
+  }
 }

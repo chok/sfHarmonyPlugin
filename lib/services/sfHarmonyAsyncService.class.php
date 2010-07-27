@@ -1,5 +1,5 @@
 <?php
-class sfHarmonyAsyncService extends sfHarmonyService
+class sfHarmonyAsyncService extends sfHarmonySecureService
 {
   protected $callback;
 
@@ -7,7 +7,7 @@ class sfHarmonyAsyncService extends sfHarmonyService
   {
     parent::__construct($source, $operation, $arguments);
 
-    $this->async = true;
+    $this->setAsync(true);
   }
 
   public function setCallback($callback)
