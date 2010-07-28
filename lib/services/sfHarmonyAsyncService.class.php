@@ -1,11 +1,11 @@
 <?php
-class sfHarmonyAsyncService extends sfHarmonySecureService
+abstract class sfHarmonyAsyncService extends sfHarmonyService
 {
   protected $callback;
 
-  public function __construct($source, $operation, $arguments = array())
+  public function __construct($operation, $params = array())
   {
-    parent::__construct($source, $operation, $arguments);
+    parent::__construct($operation, $params);
 
     $this->setAsync(true);
   }

@@ -233,6 +233,7 @@ class sfHarmonyGateway
   
   public function parseAll($requests)
   {
+    sfContext::getInstance()->getLogger()->log(var_export($requests, true));
     foreach($requests as $key => $request)
     {
       $requests[$key] = $this->parse($request);
@@ -278,7 +279,7 @@ class sfHarmonyGateway
   {
     $requests = $this->request->getParameterHolder()->getAll();
 
-    unset($requests['module'], $requests['action']);
+    unset($requests['module'], $requests['action'], $requests['gateway']);
     
     //secure
     /*$hash = null;

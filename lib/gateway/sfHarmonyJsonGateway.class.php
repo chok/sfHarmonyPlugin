@@ -4,7 +4,7 @@ class sfHarmonyJsonGateway extends sfHarmonyGateway
   protected function initialize($exec = true)
   {
     $this->setRequestParser('sfHarmonyRequestParser');
-    $this->setDispatcher('sfHarmonySecureServiceDispatcher');
+    $this->setDispatcher('sfHarmonyServiceDispatcher');
     $this->setType('json');
   }
 
@@ -13,7 +13,7 @@ class sfHarmonyJsonGateway extends sfHarmonyGateway
     //TODO gerer les requests id
     $formatter = new sfHarmonySecureFormatter($data);
     $this->result[] = $formatter->getRawValue();
-    
+
     $this->response = json_encode($this->result);
 
     $this->callCompleteCallback();

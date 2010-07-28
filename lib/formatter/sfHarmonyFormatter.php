@@ -16,7 +16,7 @@ class sfHarmonyFormatter
   protected function convert($data)
   {
     $result = array();
-    
+  
     if($data instanceof stdClass || is_array($data) || $data instanceof ArrayAccess)
     {
       foreach($data as $key => $value)
@@ -27,7 +27,6 @@ class sfHarmonyFormatter
     }
     elseif(is_object($data) && method_exists($data, 'toArray'))
     {
-      //return new SabreAMF_TypedObject('model.Post', $data->toArray());
       return $data->toArray();
     }
     else

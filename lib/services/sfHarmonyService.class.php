@@ -26,6 +26,7 @@ abstract class sfHarmonyService
   {
     if(is_null($this->parser))
     {
+      
       $this->parser = new $this->parser_class();
     }
     
@@ -37,7 +38,7 @@ abstract class sfHarmonyService
     return $this->async;
   }
   
-  public function setAsync(bool $async)
+  public function setAsync($async)
   {
     $this->async = $async;
   }

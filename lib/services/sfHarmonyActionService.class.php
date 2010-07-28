@@ -2,6 +2,11 @@
 class sfHarmonyActionService extends sfHarmonyAsyncService
 {
   protected $server;
+  
+  protected function initialize()
+  {
+    $this->parser_class = 'sfHarmonyWebParser';
+  }
 
   public function go($route)
   {
@@ -27,8 +32,6 @@ class sfHarmonyActionService extends sfHarmonyAsyncService
     {
       $this->send(array('error' => $e));
     }
-
-    $this->restoreServer();
   }
 
   public function filterRequest(sfEvent $event, $values)
@@ -41,19 +44,22 @@ class sfHarmonyActionService extends sfHarmonyAsyncService
 
   public function exec()
   {
-    $this->go(array_shift($this->arguments));
+    $query = $this->getParser()->parse($this->getOperation());
+    $this->go(array_shift($query[0]['arguments']));
   }
 
   public function send($parameters)
   {
+    $this->restoreServer();
+    
     sfContext::switchTo(sfContext::getInstance()->getConfiguration()->getApplication());
 
     if(isset($parameters['caller']))
     {
-      $data = new stdclass();
+      $data = array();
       foreach($parameters['caller']->getAll() as $name => $var)
       {
-        $data->$name = $var;
+        $data[$name] = $var;
       }
     }
     else

@@ -9,15 +9,22 @@ class sfHarmonyRequestParser extends sfHarmonyParser
     }
 
     
-    list($service, $operation) = explode('|', $request);
+    $service = '';
+    $operation = '';
     
-    if(!empty($service) && !empty($operation))
+    if(strpos($request, '|') > 0)
     {
-      return array(
-                    'service'    => $service,
-                    'operation' => $operation,
-                  );
+      list($service, $operation) = explode('|', $request);
+     
     }
-    else return null;
+    else
+    {
+      $operation = $request;  
+    }
+    
+    return array(
+                  'service'    => $service,
+                  'operation' => $operation,
+                );  
   }
 }
