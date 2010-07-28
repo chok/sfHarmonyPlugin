@@ -1,0 +1,110 @@
+sfHarmonyPlugin
+===============
+
+sfHarmonyPlugin brings:
+
+ * Easy communication between different platforms
+ * Generic gateway ( could be override by SOAP, AMF...)
+ 
+ 
+Installation
+------------
+
+ * Install
+ 
+	  $ symfony plugin:install sfHarmonyPlugin
+	 
+ * Clear cache
+ 
+	  $ symfony cc
+	
+	
+Use
+---
+
+### On local Application
+ * In your settings.yml file enable modules *sfHarmonyGateway* you can also enable *sfHarmonyServices* to see web services output.
+ * In config create an harmony.yml. 
+
+For example:
+
+    harmony:
+      model:
+        Post:
+          methods:
+            - getPlop
+            - getParp
+            - getUrl
+          fields:
+            - id
+            - title
+		        
+        PostPeer:
+          expose_methods: true
+          expose_fields: true
+ 	
+
+By default, nothing is expose. You can just have (for test purpose) :
+
+    harmony:
+       expose: true
+			
+
+An example of Action :
+
+    [php]
+    class testActions extends sfHarmonyActions
+    {
+      public function executeIndex(sfWebRequest $request)
+      {
+        $this->yo = new Post();
+        $this->yo->setId(125);
+        $this->yo->setTitle('Action Post');
+        $this->yo->setContent('yeah ca marche');
+		    
+        $this->yo2 = "yo2";
+      }
+    }
+	
+			
+			
+### On remote Application
+
+You can install the plugin too or just copy the folder middleware in lib folder of the plugin.
+
+In an action:
+
+    [php]
+    $plop_id = $service->addQuery('PostPeer::getPlop()');
+    $action_id = $service->addQuery('harmony.action|go(test/index)'); 
+    
+    $this->plop = $service->get($plop_id);
+    $this->action = $service->get($action_id);
+    
+I'll try to make more documentation to explain usage of this plugin because you can extend many parts of itself and use it in many situations. You can see a tipical call
+for Propel *PostPeer::getPlop()* which returns an array of Posts. the second query call an action on the first application with 
+routing *test/index*.
+
+In a template:
+
+	<h1>Plop</h1>
+	<ul>
+	  <?php foreach($plop as $elem): ?>
+	    <li><?php echo $elem->getTitle() ?></li>
+	  <?php endforeach ?>
+	</ul>
+	
+	<h1>Action</h1>
+	<ul>
+	  <li><?php echo $action->getYo() ?></li>
+	  <li><?php echo $action->getYo2() ?></li>
+	</ul>
+	
+	
+$elem and $action are instances of ServiceObject and can call method getX where X is a field of the object.
+
+
+TODO
+----
+
+* Documentation
